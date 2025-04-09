@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { BetterAuthOptions } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
@@ -16,6 +15,7 @@ import {
 
 import { APP_NAME } from "@/constants";
 import { env } from "@/env";
+import { PrismaClient } from "@/prisma/generated/prisma/client";
 
 const prisma = new PrismaClient();
 
