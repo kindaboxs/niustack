@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+import { SignSocialButtons } from "@/app/(auth)/_components/sign-social-buttons";
 import {
 	signUpSchema,
 	SignUpSchemaType,
@@ -27,6 +28,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { signUp } from "@/lib/auth/client";
 
 export const SignUpForm = () => {
@@ -85,7 +87,7 @@ export const SignUpForm = () => {
 							e.stopPropagation();
 							form.handleSubmit(onSubmitSignUp)(e);
 						}}
-						className="grid gap-6"
+						className="grid gap-4"
 					>
 						<div className="grid gap-4">
 							<FormField
@@ -166,6 +168,16 @@ export const SignUpForm = () => {
 						</Button>
 					</form>
 				</Form>
+
+				<div className="mt-6 space-y-4">
+					<div className="flex items-center justify-center gap-2">
+						<Separator className="flex-1" />
+						<p className="text-muted-foreground text-sm">or</p>
+						<Separator className="flex-1" />
+					</div>
+
+					<SignSocialButtons />
+				</div>
 			</CardContent>
 		</Card>
 	);
