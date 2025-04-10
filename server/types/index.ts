@@ -1,3 +1,5 @@
+import type { ApiRoutes } from "@/server";
+
 export type SuccessResponse<T = void> = {
 	success: true;
 	message: string;
@@ -8,3 +10,5 @@ export type ErrorResponseServer = {
 	error: string;
 	isFormError?: boolean;
 };
+
+export { type ApiRoutes };
