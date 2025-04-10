@@ -276,11 +276,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://nuistack_owner:npg_wn2RoU6uPHTI@ep-sparkling-butterfly-a1g2wsdx-pooler.ap-southeast-1.aws.neon.tech/nuistack?sslmode=require"
+        "value": null
       }
     }
   },
