@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { LogOutIcon, MenuIcon, UserIcon } from "lucide-react";
 
@@ -16,11 +17,27 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { signOut, useSession } from "@/lib/auth/client";
 
 import { ThemeToggleMode } from "../theme-toggle-mode";
 
 export const MobileNavHeader = () => {
 	const [open, setOpen] = useState<boolean>(false);
+	const { data: session, isPending } = useSession();
+
+	const router = useRouter();
+
+	const onSignOut = async () => {
+		await signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					router.push("/sign-in");
+					router.refresh();
+				},
+			},
+		});
+	};
 
 	return (
 		<div className="flex items-center space-x-4 md:hidden">
@@ -61,19 +78,34 @@ export const MobileNavHeader = () => {
 						</SheetClose>
 					</div>
 					<SheetFooter>
-						<div className="flex items-center justify-center gap-4">
-							<SheetClose asChild>
-								<Button className="w-full shrink cursor-pointer">
-									<LogOutIcon />
-									Sign out
-								</Button>
-							</SheetClose>
-							<SheetClose asChild>
-								<Button className="cursor-pointer" size="icon">
-									<UserIcon />
-								</Button>
-							</SheetClose>
-						</div>
+						{isPending ? (
+							<Skeleton className="h-8 w-full rounded-md" />
+						) : !session ? (
+							<>
+								<SheetClose asChild>
+									<Button className="w-full cursor-pointer" asChild>
+										<Link href="/sign-in">Sign in</Link>
+									</Button>
+								</SheetClose>
+							</>
+						) : (
+							<div className="flex items-center justify-center gap-4">
+								<SheetClose asChild>
+									<Button
+										className="w-full shrink cursor-pointer"
+										onClick={onSignOut}
+									>
+										<LogOutIcon />
+										Sign out
+									</Button>
+								</SheetClose>
+								<SheetClose asChild>
+									<Button className="cursor-pointer" size="icon">
+										<UserIcon />
+									</Button>
+								</SheetClose>
+							</div>
+						)}
 					</SheetFooter>
 				</SheetContent>
 			</Sheet>

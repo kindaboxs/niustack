@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { ThemeToggleMode } from "@/components/global/theme-toggle-mode";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,8 +20,13 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { signOut, useSession } from "@/lib/auth/client";
+import { Session } from "@/lib/auth/types";
 
 export const DesktopNavHeader = () => {
+	const { data: session, isPending } = useSession();
+
 	return (
 		<div className="hidden items-center space-x-4 md:flex">
 			<nav className="flex items-center space-x-2">
@@ -37,13 +43,41 @@ export const DesktopNavHeader = () => {
 
 			<div className="bg-border h-6 w-px" />
 
+			{isPending ? (
+				<Skeleton className="size-8 rounded-full" />
+			) : !session ? (
+				<>
+					<Button
+						// variant="secondary"
+						size="sm"
+						className="cursor-pointer"
+						asChild
+					>
+						<Link href="/sign-in">sign in</Link>
+					</Button>
+				</>
+			) : (
+				<UserButton data={JSON.parse(JSON.stringify(session))} />
+			)}
 			<ThemeToggleMode />
-			<UserButton />
 		</div>
 	);
 };
 
-const UserButton = () => {
+const UserButton = ({ data }: { data: Session }) => {
+	const router = useRouter();
+
+	const onSignOut = async () => {
+		await signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					router.push("/sign-in");
+					router.refresh();
+				},
+			},
+		});
+	};
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -53,8 +87,21 @@ const UserButton = () => {
 					className="size-8 cursor-pointer rounded-full"
 				>
 					<Avatar>
-						<AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-						<AvatarFallback>CN</AvatarFallback>
+						{data.user.image ? (
+							<>
+								<AvatarImage
+									src={data.user.image}
+									alt={data.user.username ?? data.user.name}
+								/>
+								<AvatarFallback>
+									{data.user.username?.charAt(0) ?? data.user.name.charAt(0)}
+								</AvatarFallback>
+							</>
+						) : (
+							<AvatarFallback>
+								{data.user.username?.charAt(0) ?? data.user.name.charAt(0)}
+							</AvatarFallback>
+						)}
 					</Avatar>
 				</Button>
 			</DropdownMenuTrigger>
@@ -103,7 +150,7 @@ const UserButton = () => {
 				<DropdownMenuItem>Support</DropdownMenuItem>
 				<DropdownMenuItem disabled>API</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem>
+				<DropdownMenuItem onClick={onSignOut}>
 					Log out
 					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
 				</DropdownMenuItem>
