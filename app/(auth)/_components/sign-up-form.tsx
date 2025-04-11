@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { signUp } from "@/lib/auth/client";
 
 export const SignUpForm = () => {
@@ -176,7 +177,9 @@ export const SignUpForm = () => {
 						<Separator className="flex-1" />
 					</div>
 
-					<SignSocialButtons />
+					<Suspense fallback={<Skeleton className="h-9 w-full rounded-md" />}>
+						<SignSocialButtons />
+					</Suspense>
 				</div>
 			</CardContent>
 		</Card>
