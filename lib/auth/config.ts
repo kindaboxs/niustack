@@ -49,7 +49,6 @@ export const authConfig = {
 	},
 	emailAndPassword: {
 		enabled: true,
-		// requireEmailVerification: true,
 	},
 	account: {
 		accountLinking: {
